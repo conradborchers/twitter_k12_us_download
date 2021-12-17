@@ -180,7 +180,7 @@ def get_most_recent_tweets_account(ACCOUNT_ID, BEARER_TOKEN, PARAMS,
                 print('Note: Results will not be written to a '\
                       'timestamped file but an empty file will '\
                       'be created for future reference.')
-                open(f'data/{file_reference}_empty.csv', 'a').close()
+                open(f'data/{file_reference}_2021_empty.csv', 'a').close()
             return pd.DataFrame()
         
         if 'data' not in page.keys():
@@ -316,7 +316,7 @@ if __name__ == '__main__':
     df = pd.read_csv('twitter-links-for-k12-institutions-processed.csv')
     ALL_USERNAMES = pd.unique(df['link'].map(extract_username_from_url))
     downloaded_usernames = list(map(lambda f: f.split('/')[1].split('_2021')[0], glob.glob('data/*.csv')))
-    ALL_USERNAMES = [u for u in ALL_USERNAMES if u not in downloaded_usernames]
+    ALL_USERNAMES = [u for u in ALL_USERNAMES if u not in downloaded_usernames and u != '']
     
     print(f'Downloading {len(ALL_USERNAMES)} users...')
     for user in ALL_USERNAMES:
