@@ -183,6 +183,12 @@ def get_most_recent_tweets_account(ACCOUNT_ID, BEARER_TOKEN, PARAMS,
                 open(f'data/{file_reference}_empty.csv', 'a').close()
             return pd.DataFrame()
         
+        if 'data' not in page.keys():
+            if verbose:
+                print(f'All tweets for {ACCOUNT_ID} found after '\
+                      f'{request_count+1} API calls.')
+            break
+        
         # If it is the first request, initialize data frame
         if request_count == 0: 
             df = pd.json_normalize(page['data'])
@@ -309,7 +315,7 @@ def extract_username_from_url(text: str):
 if __name__ == '__main__':
     df = pd.read_csv('twitter-links-for-k12-institutions-processed.csv')
     ALL_USERNAMES = pd.unique(df['link'].map(extract_username_from_url))
-    downloaded_usernames = list(map(lambda f: f.split('/')[1].split('_')[0], glob.glob('data/*.csv')))
+    downloaded_usernames = list(map(lambda f: f.split('/')[1].split('_2021')[0], glob.glob('data/*.csv')))
     ALL_USERNAMES = [u for u in ALL_USERNAMES if u not in downloaded_usernames]
     
     print(f'Downloading {len(ALL_USERNAMES)} users...')
