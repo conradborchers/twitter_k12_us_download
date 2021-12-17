@@ -85,7 +85,11 @@ def look_up_twitter_acount_id(BEARER_TOKEN, user_name):
                        f'Status code {req.status_code}')
     
     page = json.loads(req.content)
-
+    
+    # Some users may have been suspended or can not be found
+    if 'data' not in page.keys():
+        return False
+    
     twitter_id = page['data'][0]['id']
     
     return twitter_id
@@ -266,6 +270,14 @@ def download_and_save_account_tweets(token_file_path='bearer_token.txt',
     """
     BEARER_TOKEN = read_bearer_token(token_file_path)
     TWITTER_USER_ID = look_up_twitter_acount_id(BEARER_TOKEN, user_name)
+    
+    # If call above returned False (i.e. no account was found):
+    if not TWITTER_USER_ID:
+        print('Note: Results will not be written to a '\
+                      'timestamped file but an empty file will '\
+                      'be created for future reference.')
+        open(f'data/{user_name}_2021_empty.csv', 'a').close()
+        return
     
     # Download all variables currently available
     PARAMS = {
