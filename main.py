@@ -176,6 +176,13 @@ def get_most_recent_tweets_account(ACCOUNT_ID, BEARER_TOKEN, PARAMS,
         # Get content, paginate and save rows to df
         page = json.loads(req.content)
         
+        # Catch additional API problem
+        if 'meta' not in page.keys():
+            if verbose:
+                print(f'All tweets for {ACCOUNT_ID} found after '\
+                      f'{request_count+1} API calls.')
+            break
+        
         if page['meta']['result_count'] == 0 and request_count == 0:
             if verbose:
                 print(f'No results found for {file_reference}! Returning '\
