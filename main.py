@@ -89,7 +89,7 @@ def look_up_twitter_acount_id(BEARER_TOKEN, user_name):
     # Some users may have been suspended or can not be found
     if 'data' not in page.keys():
         return False
-    
+
     twitter_id = page['data'][0]['id']
     
     return twitter_id
@@ -181,7 +181,14 @@ def get_most_recent_tweets_account(ACCOUNT_ID, BEARER_TOKEN, PARAMS,
             if verbose:
                 print(f'All tweets for {ACCOUNT_ID} found after '\
                       f'{request_count+1} API calls.')
-            break
+            if request_count > 0:
+                break 
+            elif save_file and request_count == 0:
+                print('Note: Results will not be written to a '\
+                      'timestamped file but an empty file will '\
+                      'be created for future reference.')
+                open(f'data/{file_reference}_2021_empty.csv', 'a').close()
+                return pd.DataFrame()
         
         if page['meta']['result_count'] == 0 and request_count == 0:
             if verbose:
